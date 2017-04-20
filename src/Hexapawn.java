@@ -10,6 +10,7 @@ http://stackoverflow.com/questions/17606839/creating-a-set-of-arrays-in-java
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -63,11 +64,18 @@ public class Hexapawn {
                 }
             }
         }
+        System.out.println(wPawns);
+        System.out.println(bPawns);
         assert wPawns.size() <= cols;
         assert bPawns.size() <= cols;
     }
 
     public int solveBoard(){
+        ArrayList<int[]> moves = generateMoves(wPawns, bPawns);
+        for(int[] move : moves){
+            System.out.println(Arrays.toString(move));
+        }
+
         return 0;
     }
 
@@ -90,25 +98,25 @@ public class Hexapawn {
             col = Character.getNumericValue(pos.charAt(1));
 
             if(currentTurn == 'W'){
-                if(!wPawns.contains((row-1) + "" + col)){
+                if(!bPawns.contains((row-1) + "" + col)){
                     moves.add(new int[]{row, col, row-1, col});
                 }
                 if(bPawns.contains((row-1) + "" + (col-1))){
                     moves.add(new int[]{row, col, row-1, col-1});
                 }
                 if(bPawns.contains((row-1) + "" + (col+1))){
-                    moves.add(new int[]{row, col, row-1, col-1});
+                    moves.add(new int[]{row, col, row-1, col+1});
                 }
             }
             else{
                 if(!wPawns.contains((row+1) + "" + col)){
-                    moves.add(new int[]{row, col, row-1, col});
+                    moves.add(new int[]{row, col, row+1, col});
                 }
                 if(wPawns.contains((row+1) + "" + (col-1))){
-                    moves.add(new int[]{row, col, row-1, col-1});
+                    moves.add(new int[]{row, col, row+1, col-1});
                 }
                 if(wPawns.contains((row+1) + "" + (col+1))){
-                    moves.add(new int[]{row, col, row-1, col-1});
+                    moves.add(new int[]{row, col, row+1, col+1});
                 }
             }
         }
