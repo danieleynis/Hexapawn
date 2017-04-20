@@ -74,27 +74,52 @@ public class Hexapawn {
         return solveBoard(wPawns, bPawns);
     }
 
-    public int solveBoard(HashSet<String> wPawns, HashSet<String> bPawns){
+    private int solveBoard(HashSet<String> wPawns, HashSet<String> bPawns){
         ArrayList<int[]> moves = generateMoves(wPawns, bPawns);
 
         if(moves == null || moves.size() == 0)
             return -1;
 
         int max = -1;
-        int val = 0;
+        int val;
         for(int[] move : moves){
             HashSet<String> copyPawnsW = new HashSet<>(wPawns);
             HashSet<String> copyPawnsB = new HashSet<>(bPawns);
-            boolean win = executeMove(copyPawnsW, copyPawnsB);
+            boolean win = executeMove(copyPawnsW, copyPawnsB, move);
             if(win)
                 return 1;
             val = - solveBoard(copyPawnsW, copyPawnsB);
-            max = Math.max(max, val)
+            max = Math.max(max, val);
         }
         return max;
     }
 
-    private boolean executeMove(HashSet<String> wPawns, HashSet<String> bPawns){
+    private boolean executeMove(HashSet<String> wPawns, HashSet<String> bPawns, int[] move){
+        if(move[2] == 0 || move[2] == rows-1)
+            return true;
+
+        HashSet<String> onMovePawns;
+        HashSet<String> waitingPawns;
+
+        if(currentTurn == 'W') {
+            onMovePawns = wPawns;
+            waitingPawns = bPawns;
+        }
+        else {
+            onMovePawns = bPawns;
+            waitingPawns = bPawns;
+        }
+
+        String startLoc = move[0] + "" + move[1];
+        String endLoc = move[2] + "" + move[3];
+
+        if(waitingPawns.contains(endLoc)){
+            waitingPawns.remove(endLoc);
+        }
+
+        onMovePawns.remove(startLoc);
+        onMovePawns.add(endLoc);
+
         return false;
     }
 
