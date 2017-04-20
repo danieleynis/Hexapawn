@@ -7,6 +7,8 @@ https://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html
 https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html
 http://stackoverflow.com/questions/13942701/take-a-char-input-from-the-scanner
 http://stackoverflow.com/questions/17606839/creating-a-set-of-arrays-in-java
+http://stackoverflow.com/questions/19388037/converting-characters-to-integers-in-java
+http://stackoverflow.com/questions/12940663/does-adding-a-duplicate-value-to-a-hashset-hashmap-replace-the-previous-value
  */
 
 import java.util.ArrayList;
@@ -64,23 +66,36 @@ public class Hexapawn {
                 }
             }
         }
-        System.out.println(wPawns);
-        System.out.println(bPawns);
         assert wPawns.size() <= cols;
         assert bPawns.size() <= cols;
     }
 
     public int solveBoard(){
-        ArrayList<int[]> moves = generateMoves(wPawns, bPawns);
-        for(int[] move : moves){
-            System.out.println(Arrays.toString(move));
-        }
-
-        return 0;
+        return solveBoard(wPawns, bPawns);
     }
 
     public int solveBoard(HashSet<String> wPawns, HashSet<String> bPawns){
-        return 0;
+        ArrayList<int[]> moves = generateMoves(wPawns, bPawns);
+
+        if(moves == null || moves.size() == 0)
+            return -1;
+
+        int max = -1;
+        int val = 0;
+        for(int[] move : moves){
+            HashSet<String> copyPawnsW = new HashSet<>(wPawns);
+            HashSet<String> copyPawnsB = new HashSet<>(bPawns);
+            boolean win = executeMove(copyPawnsW, copyPawnsB);
+            if(win)
+                return 1;
+            val = - solveBoard(copyPawnsW, copyPawnsB);
+            max = Math.max(max, val)
+        }
+        return max;
+    }
+
+    private boolean executeMove(HashSet<String> wPawns, HashSet<String> bPawns){
+        return false;
     }
 
     private ArrayList<int[]> generateMoves(HashSet<String> wPawns, HashSet<String> bPawns){
