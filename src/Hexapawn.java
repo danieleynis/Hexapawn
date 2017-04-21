@@ -12,7 +12,6 @@ http://stackoverflow.com/questions/12940663/does-adding-a-duplicate-value-to-a-h
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -90,18 +89,9 @@ public class Hexapawn {
             if(win)
                 return 1;
 
-            if(currentTurn == 'W')
-                currentTurn = 'B';
-            else
-                currentTurn = 'W';
-
+            currentTurn = (currentTurn == 'W' ? 'B' : 'W');
             val = - solveBoard(copyPawnsW, copyPawnsB);
-
-            if(currentTurn == 'W')
-                currentTurn = 'B';
-            else
-                currentTurn = 'W';
-
+            currentTurn = (currentTurn == 'W' ? 'B' : 'W');
             max = Math.max(max, val);
         }
         return max;
