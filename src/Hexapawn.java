@@ -18,7 +18,7 @@ import java.util.Scanner;
 
 public class Hexapawn {
 
-    private char currentTurn = 'W';
+    private char currentTurn;
     private char[][] board;
     private int cols, rows;
     private HashSet<String> wPawns = new HashSet<>();
@@ -86,9 +86,22 @@ public class Hexapawn {
             HashSet<String> copyPawnsW = new HashSet<>(wPawns);
             HashSet<String> copyPawnsB = new HashSet<>(bPawns);
             boolean win = executeMove(copyPawnsW, copyPawnsB, move);
+
             if(win)
                 return 1;
+
+            if(currentTurn == 'W')
+                currentTurn = 'B';
+            else
+                currentTurn = 'W';
+
             val = - solveBoard(copyPawnsW, copyPawnsB);
+
+            if(currentTurn == 'W')
+                currentTurn = 'B';
+            else
+                currentTurn = 'W';
+
             max = Math.max(max, val);
         }
         return max;
@@ -107,7 +120,7 @@ public class Hexapawn {
         }
         else {
             onMovePawns = bPawns;
-            waitingPawns = bPawns;
+            waitingPawns = wPawns;
         }
 
         String startLoc = move[0] + "" + move[1];
@@ -138,25 +151,25 @@ public class Hexapawn {
             col = Character.getNumericValue(pos.charAt(1));
 
             if(currentTurn == 'W'){
-                if(!bPawns.contains((row-1) + "" + col)){
-                    moves.add(new int[]{row, col, row-1, col});
-                }
                 if(bPawns.contains((row-1) + "" + (col-1))){
                     moves.add(new int[]{row, col, row-1, col-1});
                 }
                 if(bPawns.contains((row-1) + "" + (col+1))){
                     moves.add(new int[]{row, col, row-1, col+1});
                 }
+                if(!bPawns.contains((row-1) + "" + col)){
+                    moves.add(new int[]{row, col, row-1, col});
+                }
             }
             else{
-                if(!wPawns.contains((row+1) + "" + col)){
-                    moves.add(new int[]{row, col, row+1, col});
-                }
                 if(wPawns.contains((row+1) + "" + (col-1))){
                     moves.add(new int[]{row, col, row+1, col-1});
                 }
                 if(wPawns.contains((row+1) + "" + (col+1))){
                     moves.add(new int[]{row, col, row+1, col+1});
+                }
+                if(!wPawns.contains((row+1) + "" + col)){
+                    moves.add(new int[]{row, col, row+1, col});
                 }
             }
         }
