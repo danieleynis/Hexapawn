@@ -16,9 +16,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 public class Hexapawn {
-
     private char currentTurn;
-    private char[][] board;
     private int cols, rows;
     private HashSet<String> wPawns = new HashSet<>();
     private HashSet<String> bPawns = new HashSet<>();
@@ -40,14 +38,12 @@ public class Hexapawn {
         }
 
         assert inputLines.size() != 0 && rows != 0 && inputLines.size() == rows;
-        board = new char[rows][];
 
         char[] pieceArray;
         cols = inputLines.get(0).length();
         for (int i = 0; i < inputLines.size(); ++i){
             pieceArray = inputLines.get(i).toCharArray();
             assert pieceArray.length == cols;
-            board[i] = pieceArray;
 
             for (int j = 0; j < pieceArray.length; ++j){
                 char curPos = pieceArray[j];
@@ -84,6 +80,7 @@ public class Hexapawn {
         for(int[] move : moves){
             HashSet<String> copyPawnsW = new HashSet<>(wPawns);
             HashSet<String> copyPawnsB = new HashSet<>(bPawns);
+
             boolean win = executeMove(copyPawnsW, copyPawnsB, move);
 
             if(win)
@@ -92,6 +89,7 @@ public class Hexapawn {
             currentTurn = (currentTurn == 'W' ? 'B' : 'W');
             val = - solveBoard(copyPawnsW, copyPawnsB);
             currentTurn = (currentTurn == 'W' ? 'B' : 'W');
+
             max = Math.max(max, val);
         }
         return max;
@@ -141,34 +139,28 @@ public class Hexapawn {
             col = Character.getNumericValue(pos.charAt(1));
 
             if(currentTurn == 'W'){
+                if(!bPawns.contains((row-1) + "" + col)){
+                    moves.add(0, new int[]{row, col, row-1, col});
+                }
                 if(bPawns.contains((row-1) + "" + (col-1))){
                     moves.add(new int[]{row, col, row-1, col-1});
                 }
                 if(bPawns.contains((row-1) + "" + (col+1))){
                     moves.add(new int[]{row, col, row-1, col+1});
                 }
-                if(!bPawns.contains((row-1) + "" + col)){
-                    moves.add(new int[]{row, col, row-1, col});
-                }
             }
             else{
+                if(!wPawns.contains((row+1) + "" + col)){
+                    moves.add(0, new int[]{row, col, row+1, col});
+                }
                 if(wPawns.contains((row+1) + "" + (col-1))){
                     moves.add(new int[]{row, col, row+1, col-1});
                 }
                 if(wPawns.contains((row+1) + "" + (col+1))){
                     moves.add(new int[]{row, col, row+1, col+1});
                 }
-                if(!wPawns.contains((row+1) + "" + col)){
-                    moves.add(new int[]{row, col, row+1, col});
-                }
             }
         }
         return moves;
-    }
-
-    private void printBoard(char[][] boardToPrint){
-        for(char[] row : boardToPrint){
-            System.out.println(row);
-        }
     }
 }
