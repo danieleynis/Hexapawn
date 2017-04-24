@@ -23,7 +23,9 @@ public class Hexapawn {
 
     Hexapawn() {
         Scanner input = new Scanner(System.in);
-        currentTurn = input.nextLine().charAt(0);
+        String curTurn = input.nextLine();
+        if(!curTurn.isEmpty())
+            currentTurn = input.nextLine().charAt(0);
         assert currentTurn == 'W' || currentTurn == 'B';
 
         ArrayList<String> inputLines = new ArrayList<>();  // read in input lines into an array list
