@@ -24,19 +24,17 @@ for fname in glob.glob("tests/*.in"):
 	outf = "tests/" + name + ".out"  # name of output file
 	
 	with open(fname) as infile:  # get contents of input file
-		fcontent = infile.read()
 
+		with open(outf) as outfile:  # get resulting output to compare
+			foutcont = outfile.read()
 
-	with open(outf) as outfile:  # get resulting output to compare
-		foutcont = outfile.read()
+		# start a subprocess with the program running and pass the input file contents, capture stderr
+		proc = Popen(["java", "-cp", "src", "Main"], stdin=infile, stdout=PIPE, stderr=PIPE)
+		out, err = proc.communicate()
 
-	# start a subprocess with the program running and pass the input file contents, capture stderr
-	proc = Popen(["java", "-cp", "src", "Main"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-	out, err = proc.communicate(input=bytes(fcontent.encode("utf8")))
-
-	if err.decode() == foutcont:  # if output matches expected output in file pass or fail
-		result = "PASSED"
-	else:
-		result = "FAILED"
-	
-	print("Test " + name + ": " + result)  # print result
+		if err.decode() == foutcont:  # if output matches expected output in file pass or fail
+			result = "PASSED"
+		else:
+			result = "FAILED"
+		
+		print("Test " + name + ": " + result)  # print result
