@@ -213,7 +213,7 @@ public class Hexapawn {
         for(String wPos : wPawns)
             zobristKey ^= wZobrist.get(wPos);
 
-        for(String bPos: wPawns)
+        for(String bPos: bPawns)
             zobristKey ^= bZobrist.get(bPos);
 
         return zobristKey;
