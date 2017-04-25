@@ -9,17 +9,21 @@ http://stackoverflow.com/questions/13942701/take-a-char-input-from-the-scanner
 http://stackoverflow.com/questions/17606839/creating-a-set-of-arrays-in-java
 http://stackoverflow.com/questions/19388037/converting-characters-to-integers-in-java
 http://stackoverflow.com/questions/12940663/does-adding-a-duplicate-value-to-a-hashset-hashmap-replace-the-previous-value
+http://stackoverflow.com/questions/16784347/transposition-table-for-game-tree-connect-4
  */
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 
 public class Hexapawn {
     private char currentTurn; // keeps track of the current player turn 'W' or 'B'
     private int cols, rows;
     private HashSet<String> wPawns = new HashSet<>(); // hash set of all white pawns
     private HashSet<String> bPawns = new HashSet<>(); // hash set of all black pawns
+    private HashMap<Long, Integer> transTable = new HashMap<>();
+    private HashMap<String, Long> wZobrist = new HashMap<>();
+    private HashMap<String, Long> bZobrist = new HashMap<>();
+
+    private int nodesExplored = 0;
 
     Hexapawn() {
         Scanner input = new Scanner(System.in);
@@ -65,17 +69,37 @@ public class Hexapawn {
         }
         assert wPawns.size() <= cols;
         assert bPawns.size() <= cols;
+
+        Random random = new Random();
+        for(int i = 0; i < rows; ++i){
+            for(int j = 0; j < cols; ++j){
+                wZobrist.put(i + "" + j, random.nextLong());
+                bZobrist.put(i + "" + j, random.nextLong());
+            }
+        }
     }
 
     public int solveBoard(){
-        return solveBoard(wPawns, bPawns);
+        int nValue = solveBoard(wPawns, bPawns);
+        System.out.println("Nodes explored: " + nodesExplored);
+        return nValue;
     }
 
     private int solveBoard(HashSet<String> wPawns, HashSet<String> bPawns){
+
+        long zobKey = getZobristKey(wPawns, bPawns);
+        if(transTable.containsKey(zobKey)){
+            return transTable.get(zobKey);
+        }
+
         ArrayList<int[]> moves = generateMoves(wPawns, bPawns);  // get list of moves
 
-        if(moves == null || moves.size() == 0)  // if no moves left, signifies a loss for side on move
+        ++nodesExplored;
+
+        if(moves == null || moves.size() == 0) {  // if no moves left, signifies a loss for side on move
+            transTable.put(zobKey, -1);
             return -1;
+        }
 
         int max = -1;
         int val;
@@ -84,9 +108,12 @@ public class Hexapawn {
             HashSet<String> copyPawnsB = new HashSet<>(bPawns);
 
             boolean win = executeMove(copyPawnsW, copyPawnsB, move);  // execute move on copies
+            long moveZobKey = getZobristKey(copyPawnsW, copyPawnsB);
 
-            if(win) // if execute move function returns true it is a win, return 1 no use in finding other wins
+            if(win) { // if execute move function returns true it is a win, return 1 no use in finding other wins
+                transTable.put(moveZobKey, 1);
                 return 1;
+            }
 
             currentTurn = (currentTurn == 'W' ? 'B' : 'W');  // flip the current turn before recursive call
             val = - solveBoard(copyPawnsW, copyPawnsB);  // negate the return value of the recursive call (negamax)
@@ -94,6 +121,8 @@ public class Hexapawn {
 
             max = Math.max(max, val);
         }
+
+        transTable.put(zobKey, max);
         return max;
     }
 
@@ -176,5 +205,17 @@ public class Hexapawn {
             }
         }
         return moves;  // return the list of moves
+    }
+
+    long getZobristKey(HashSet<String> wPawns, HashSet<String> bPawns){
+        long zobristKey = 0;
+
+        for(String wPos : wPawns)
+            zobristKey ^= wZobrist.get(wPos);
+
+        for(String bPos: wPawns)
+            zobristKey ^= bZobrist.get(bPos);
+
+        return zobristKey;
     }
 }
