@@ -12,6 +12,7 @@ http://stackoverflow.com/questions/12940663/does-adding-a-duplicate-value-to-a-h
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -25,7 +26,7 @@ public class Hexapawn {
         Scanner input = new Scanner(System.in);
         String curTurn = input.nextLine();
         if(!curTurn.isEmpty())
-            currentTurn = input.nextLine().charAt(0);
+            currentTurn = curTurn.charAt(0);
         assert currentTurn == 'W' || currentTurn == 'B';
 
         ArrayList<String> inputLines = new ArrayList<>();  // read in input lines into an array list
