@@ -29,7 +29,7 @@ for fname in glob.glob("tests/*.in"):
 			foutcont = outfile.read()
 
 		# start a subprocess with the program running and pass the input file contents, capture stderr
-		proc = Popen(["java", "-cp", "src", "Main"], stdin=infile, stdout=PIPE, stderr=PIPE)
+		proc = Popen(["java", "-cp", "src", "Main", "-ea"], stdin=infile, stdout=PIPE, stderr=PIPE)
 		out, err = proc.communicate()
 
 		if err.decode() == foutcont:  # if output matches expected output in file pass or fail
