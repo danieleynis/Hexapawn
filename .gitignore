@@ -3,3 +3,7 @@ out
 *.iml
 *.swp
 *.class
+*.docx
+*.pdf
+*.txt
+*.zip
