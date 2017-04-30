@@ -22,6 +22,7 @@ public class Hexapawn {
     private HashMap<Long, Integer> transTable = new HashMap<>();
     private HashMap<String, Long> wZobrist = new HashMap<>();
     private HashMap<String, Long> bZobrist = new HashMap<>();
+    private long wPlayerZob, bPlayerZob;
 
     private int nodesExplored = 0;
 
@@ -71,6 +72,8 @@ public class Hexapawn {
         assert bPawns.size() <= cols;
 
         Random random = new Random();
+        wPlayerZob = random.nextLong();
+        bPlayerZob = random.nextLong();
         for(int i = 0; i < rows; ++i){
             for(int j = 0; j < cols; ++j){
                 wZobrist.put(i + "" + j, random.nextLong());
@@ -81,7 +84,7 @@ public class Hexapawn {
 
     public int solveBoard(){
         int nValue = solveBoard(wPawns, bPawns);
-        System.out.println("Nodes explored: " + nodesExplored);
+		System.out.println("Nodes explored: " + nodesExplored);
         return nValue;
     }
 
@@ -209,6 +212,11 @@ public class Hexapawn {
 
     long getZobristKey(HashSet<String> wPawns, HashSet<String> bPawns){
         long zobristKey = 0;
+
+        if(currentTurn == 'W')
+            zobristKey ^= wPlayerZob;
+        else
+            zobristKey ^= bPlayerZob;
 
         for(String wPos : wPawns)
             zobristKey ^= wZobrist.get(wPos);
